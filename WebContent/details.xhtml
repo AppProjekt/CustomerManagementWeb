@@ -1,0 +1,113 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets">
+
+	<ui:composition template="/templates/template.xhtml">
+	
+	<ui:define name="title">Kundenverwaltung: ##{customers.customerId} (#{ customers.customer.lastName})</ui:define>
+	
+	<ui:define name="content">
+	
+		<f:metadata>
+			<f:viewParam name="id" value="#{ customers.customerId}" />
+			<f:event listener="#{ customers.initCustomer()}" type="preRenderView" />
+		</f:metadata>
+		
+		<h:form>
+				<table class="table">
+					<tr>
+						<td>
+							<h:link outcome="/index" value="Alle anzeigen" styleClass="btn btn-default"/>
+						</td>
+						<td>
+							<h:link outcome="/editUser" value="Neu" styleClass="btn-success btn"/>
+						</td>
+						<td>
+							<h:link outcome="/editUser" value="Bearbeiten" styleClass="btn-warning btn">
+								<f:param name="id" value="#{customers.customerId}"></f:param>
+							</h:link>
+						</td>
+						<td>
+							<h:link rendered="#{ request.isUserInRole('ADMINISTRATOR') }" outcome="/message" value="Nachricht" styleClass="btn-info btn">
+								<f:param name="id" value="#{customers.customerId}"></f:param>
+							</h:link>
+						</td>
+						<td>
+							<h:link rendered="#{ request.isUserInRole('ADMINISTRATOR') }" outcome="/delete" value="Löschen" styleClass="btn-danger btn">
+								<f:param name="id" value="#{customers.customerId}"></f:param>
+							</h:link>
+						</td>
+					</tr>
+				</table>
+		</h:form>
+		<table class="table table-bordered table-striped">
+				<thead>
+					<tr>
+						<th colspan="2">Kundeninformationen</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<th>Name</th>
+						<td>#{customers.customer.firstName} #{customers.customer.lastName}</td>
+					</tr>
+					<tr>
+						<th>Geburtstag</th>
+						<td>#{ customers.birthdayFormatted }</td>
+					</tr>
+					<tr>
+						<th>Beziehung</th>
+						<td>#{ customers.relationship }</td>
+					</tr>
+				</tbody>
+		</table>
+		
+		<h:dataTable styleClass="table table-bordered table-striped" 
+						 var="entry" value="#{customers.addresses}">
+				<h:column>
+					<f:facet name="header">Strasse</f:facet>
+					#{ entry.address.street }
+				</h:column>
+				<h:column>
+					<f:facet name="header">PLZ</f:facet>
+					#{ entry.address.zip }
+				</h:column>
+				<h:column>
+					<f:facet name="header">Ort</f:facet>
+					#{ entry.address.city }
+				</h:column>
+				<h:column>
+					<f:facet name="header">Land</f:facet>
+					#{ address.address.country }
+				</h:column>
+				<h:column>
+					<f:facet name="header">Art</f:facet>
+					#{ entry.addressKind }
+				</h:column>
+			</h:dataTable>
+			
+			<h:dataTable var="comm" value="#{customers.communications}" 
+			             styleClass="table table-bordered table-striped">
+				<h:column>
+					<f:facet name="header">Name</f:facet>
+					#{comm.communication.name}
+				</h:column>
+				<h:column>
+					<f:facet name="header">Wert</f:facet>
+					#{comm.communication.value}
+				</h:column>
+				<h:column>
+					<f:facet name="header">Typ</f:facet>
+					#{comm.communicationType}
+				</h:column>
+				<h:column>
+					<f:facet name="header">Art</f:facet>
+					#{comm.communicationKind}
+				</h:column>
+		</h:dataTable> 
+	
+	</ui:define>
+	</ui:composition>
+</html>

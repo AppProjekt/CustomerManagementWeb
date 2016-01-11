@@ -1,0 +1,102 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html">
+
+	<ui:composition template="/templates/template.xhtml">
+	
+		<ui:define name="title">
+			<h:outputFormat value="#{msg.headline_sendMessage}">
+				<f:param value="#{ mailSender.customer.lastName}" />
+				<f:param value="#{ mailSender.customer.firstName}" />
+			</h:outputFormat>
+		</ui:define>
+	
+		<ui:define name="content">
+		
+			<f:metadata>
+			    <f:viewParam name="id" value="#{mailSender.customerId}" />
+			    <f:event listener="#{mailSender.initialize()}" type="preRenderView"></f:event>
+			</f:metadata>	
+				
+			<h:form prependId="false">
+				<h:inputHidden value="#{mailSender.customerId}" id="id" />
+				
+				<div class="row">
+					<div class="col-sm-12">
+						<h4>
+							<h:outputFormat value="#{msg.headline_sendMessage}">
+								<f:param value="#{ mailSender.customer.lastName}" />
+								<f:param value="#{ mailSender.customer.firstName}" />
+							</h:outputFormat>
+						</h4>
+						<hr />
+					</div>
+				</div>
+				
+				<h:panelGroup rendered="#{ !mailSender.mailSent }">
+				
+					<div class="row form-group">
+						<h:outputLabel value="#{msg.label_subject}" styleClass="col-sm-2 control-label"/>
+						
+						<div class="col-sm-12">
+							<h:inputText id="subject" value="#{mailSender.subject}" styleClass="form-control" />
+						</div>
+					</div>
+					
+					<div class="row form-group">
+						<h:outputLabel value="#{msg.label_message}" styleClass="col-sm-2 control-label"/>
+						
+						<div class="col-sm-12">
+							<h:inputTextarea id="message" styleClass="form-control" rows="6" value="#{mailSender.message}"/>
+						</div>
+					</div>
+					
+					<div class="row">
+						<div class="col-sm-12">
+							<h:link outcome="/details" value="#{msg.label_cancel}" styleClass="btn btn-default">
+								<f:param name="id" value="#{mailSender.customerId}"></f:param>
+							</h:link>
+							
+							<h:commandButton action="#{mailSender.send()}" value="#{msg.label_send}" 
+											 styleClass="btn btn-success" style="margin-left:10px">		
+							
+								<f:ajax execute="@all" render="@all" />
+									
+							</h:commandButton>
+						</div>
+					</div>
+				
+				</h:panelGroup>
+				
+				<h:panelGroup rendered="#{ mailSender.mailSent }">
+				
+					<div class="row">
+						<div class="col-sm-12">
+							#{msg.message_messageSent}
+						</div>
+					</div>
+					
+					<div class="row">&nbsp;</div>
+						
+					<div class="row">					
+						<div class="col-sm-12">
+							<h:link outcome="/details" value="#{msg.label_backToDetails}" 
+								    styleClass="btn btn-default">
+								    
+								<f:param name="id" value="#{mailSender.customerId}"></f:param>
+							</h:link>
+						</div>
+					</div>
+				
+				</h:panelGroup>
+			
+			</h:form>
+			
+			<div class="row">&nbsp;</div>
+					
+		</ui:define>
+	
+	</ui:composition>
+</html>
